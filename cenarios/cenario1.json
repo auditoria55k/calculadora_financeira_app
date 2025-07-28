@@ -1,0 +1,80 @@
+{
+  "nome": "cenario1",
+  "descricao": "nao",
+  "dataCriacao": "2025-07-27",
+  "autor": "Usuário",
+  "parametros": {
+    "crescimento": {
+      "usuariosIniciais": 0,
+      "mesInicioUsuario": 1,
+      "aumentoAbsolutoMensal": 1,
+      "metaUsuarios6m": 5,
+      "periodoProjecao": 12
+    },
+    "iaOperacionais": {
+      "usdBrl": 5.8,
+      "iofRate": 3.38,
+      "modeloOpenAI": "o3",
+      "custoInputToken": 2,
+      "custoOutputToken": 8,
+      "custoFixoMensal": 300,
+      "ttsAtivo": true,
+      "custoTTS": 0.0114,
+      "tokensPerCredito": 1000
+    },
+    "planos": {
+      "free": {
+        "creditos": 10,
+        "preco": 0
+      },
+      "basico": {
+        "creditos": 200,
+        "preco": 29.9
+      },
+      "pro": {
+        "creditos": 1000,
+        "preco": 99.9
+      },
+      "max": {
+        "creditos": 5000,
+        "preco": 399.9
+      }
+    },
+    "distribuicao": {
+      "percentFree": 50,
+      "percentBasic": 30,
+      "percentPro": 20,
+      "percentMax": 0
+    },
+    "creditosAvulsos": {
+      "pacoteCreditos": 100,
+      "precoPackage": 19.9,
+      "percentualUsuarios": 5,
+      "pacotesPorUsuario": 1,
+      "posPago": false,
+      "riscoInadimplencia": 5
+    },
+    "churn": {
+      "churnPagos": 8,
+      "churnFree": 15
+    },
+    "testeGratuito": {
+      "creditosIniciais": 50,
+      "percentualUsuarios": 100
+    },
+    "consumoReal": {
+      "consumoFree": 100,
+      "consumoBasico": 100,
+      "consumoPro": 100,
+      "consumoMax": 100,
+      "consumoAvulso": 100,
+      "consumoTeste": 100
+    },
+    "avancados": {
+      "inputOutputMix": 50,
+      "cac": 150,
+      "ttsUsagePercent": 5,
+      "ttsMinutesPerCredit": 0.02
+    }
+  }
+}

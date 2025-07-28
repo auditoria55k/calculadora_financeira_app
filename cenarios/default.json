@@ -1,0 +1,81 @@
+{
+  "nome": "Configuração Padrão",
+  "descricao": "Valores padrão para cálculos de precificação do Auditor.IA",
+  "dataCriacao": "2025-01-27",
+  "autor": "Sistema",
+  "parametros": {
+    "crescimento": {
+      "usuariosIniciais": 0,
+      "mesInicioUsuario": 1,
+      "aumentoAbsolutoMensal": 2,
+      "metaUsuarios6m": 30,
+      "periodoProjecao": 12
+    },
+    "iaOperacionais": {
+      "usdBrl": 5.80,
+      "iofRate": 3.38,
+      "modeloOpenAI": "gpt-4o-mini",
+      "custoInputToken": 0.15,
+      "custoOutputToken": 0.60,
+      "custoFixoMensal": 300,
+      "ttsAtivo": false,
+      "custoTTS": 0.0114,
+      "tokensPerCredito": 100
+    },
+    "consumoReal": {
+      "consumoFree": 75,
+      "consumoBasico": 85,
+      "consumoPro": 90,
+      "consumoMax": 95,
+      "consumoAvulso": 95,
+      "consumoTeste": 80
+    },
+    "planos": {
+      "free": {
+        "creditos": 15,
+        "preco": 0
+      },
+      "basico": {
+        "creditos": 200,
+        "preco": 29.90
+      },
+      "pro": {
+        "creditos": 1000,
+        "preco": 99.90
+      },
+      "max": {
+        "creditos": 5000,
+        "preco": 399.90
+      }
+    },
+    "distribuicao": {
+      "percentFree": 40,
+      "percentBasic": 30,
+      "percentPro": 25,
+      "percentMax": 5
+    },
+    "creditosAvulsos": {
+      "pacoteCreditos": 100,
+      "precoPackage": 19.90,
+      "percentualUsuarios": 15,
+      "pacotesPorUsuario": 1.5,
+      "posPago": false,
+      "riscoInadimplencia": 5
+    },
+    "churn": {
+      "churnPagos": 8,
+      "churnFree": 15
+    },
+    "testeGratuito": {
+      "creditosIniciais": 50,
+      "percentualUsuarios": 100
+    },
+    "avancados": {
+      "inputOutputMix": 70,
+      "cac": 150,
+      "ttsUsagePercent": 5,
+      "ttsMinutesPerCredit": 0.02
+    }
+  },
+  "observacoes": "Configuração padrão com plano Free, distribuição realista e churn controlado"
+}

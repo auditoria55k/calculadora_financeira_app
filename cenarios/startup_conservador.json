@@ -1,0 +1,81 @@
+{
+  "nome": "Startup Conservador",
+  "descricao": "Cenário conservador para startup com crescimento gradual",
+  "dataCriacao": "2025-01-27",
+  "autor": "Auditor.IA",
+  "parametros": {
+    "crescimento": {
+      "usuariosIniciais": 0,
+      "mesInicioUsuario": 2,
+      "aumentoAbsolutoMensal": 25,
+      "metaUsuarios6m": 150,
+      "periodoProjecao": 18
+    },
+    "iaOperacionais": {
+      "usdBrl": 6.00,
+      "iofRate": 6.38,
+      "modeloOpenAI": "gpt-3.5-turbo",
+      "custoInputToken": 0.50,
+      "custoOutputToken": 1.50,
+      "custoFixoMensal": 3000,
+      "ttsAtivo": false,
+      "custoTTS": 0.0114,
+      "tokensPerCredito": 80
+    },
+    "consumoReal": {
+      "consumoFree": 65,
+      "consumoBasico": 75,
+      "consumoPro": 85,
+      "consumoMax": 90,
+      "consumoAvulso": 85,
+      "consumoTeste": 70
+    },
+    "planos": {
+      "free": {
+        "creditos": 10,
+        "preco": 0
+      },
+      "basico": {
+        "creditos": 150,
+        "preco": 19.90
+      },
+      "pro": {
+        "creditos": 750,
+        "preco": 79.90
+      },
+      "max": {
+        "creditos": 3000,
+        "preco": 299.90
+      }
+    },
+    "distribuicao": {
+      "percentFree": 50,
+      "percentBasic": 35,
+      "percentPro": 12,
+      "percentMax": 3
+    },
+    "creditosAvulsos": {
+      "pacoteCreditos": 50,
+      "precoPackage": 14.90,
+      "percentualUsuarios": 10,
+      "pacotesPorUsuario": 1.2,
+      "posPago": false,
+      "riscoInadimplencia": 3
+    },
+    "churn": {
+      "churnPagos": 12,
+      "churnFree": 20
+    },
+    "testeGratuito": {
+      "creditosIniciais": 30,
+      "percentualUsuarios": 90
+    },
+    "avancados": {
+      "inputOutputMix": 75,
+      "cac": 100,
+      "ttsUsagePercent": 3,
+      "ttsMinutesPerCredit": 0.015
+    }
+  },
+  "observacoes": "Cenário conservador com alta proporção de usuários free e churn elevado"
+}

@@ -1,0 +1,81 @@
+{
+  "nome": "Crescimento Agressivo",
+  "descricao": "Cenário otimista com crescimento acelerado e preços premium",
+  "dataCriacao": "2025-01-27",
+  "autor": "Auditor.IA",
+  "parametros": {
+    "crescimento": {
+      "usuariosIniciais": 10,
+      "mesInicioUsuario": 1,
+      "aumentoAbsolutoMensal": 100,
+      "metaUsuarios6m": 600,
+      "periodoProjecao": 12
+    },
+    "iaOperacionais": {
+      "usdBrl": 5.50,
+      "iofRate": 6.38,
+      "modeloOpenAI": "gpt-4o",
+      "custoInputToken": 2.50,
+      "custoOutputToken": 10.00,
+      "custoFixoMensal": 8000,
+      "ttsAtivo": true,
+      "custoTTS": 0.0114,
+      "tokensPerCredito": 150
+    },
+    "consumoReal": {
+      "consumoFree": 85,
+      "consumoBasico": 90,
+      "consumoPro": 95,
+      "consumoMax": 98,
+      "consumoAvulso": 98,
+      "consumoTeste": 90
+    },
+    "planos": {
+      "free": {
+        "creditos": 10,
+        "preco": 0
+      },
+      "basico": {
+        "creditos": 300,
+        "preco": 49.90
+      },
+      "pro": {
+        "creditos": 1500,
+        "preco": 149.90
+      },
+      "max": {
+        "creditos": 7500,
+        "preco": 599.90
+      }
+    },
+    "distribuicao": {
+      "percentFree": 30,
+      "percentBasic": 25,
+      "percentPro": 35,
+      "percentMax": 10
+    },
+    "creditosAvulsos": {
+      "pacoteCreditos": 200,
+      "precoPackage": 39.90,
+      "percentualUsuarios": 25,
+      "pacotesPorUsuario": 2.0,
+      "posPago": true,
+      "riscoInadimplencia": 8
+    },
+    "churn": {
+      "churnPagos": 5,
+      "churnFree": 10
+    },
+    "testeGratuito": {
+      "creditosIniciais": 100,
+      "percentualUsuarios": 70
+    },
+    "avancados": {
+      "inputOutputMix": 65,
+      "cac": 200,
+      "ttsUsagePercent": 8,
+      "ttsMinutesPerCredit": 0.03
+    }
+  },
+  "observacoes": "Cenário agressivo com baixo churn, alta conversão para planos pagos e receita premium"
+}

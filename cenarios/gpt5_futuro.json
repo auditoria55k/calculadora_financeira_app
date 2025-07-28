@@ -1,0 +1,81 @@
+{
+  "nome": "GPT-5 Futuro",
+  "descricao": "Cenário futuro com GPT-5 e tecnologias avançadas",
+  "dataCriacao": "2025-01-27",
+  "autor": "Auditor.IA",
+  "parametros": {
+    "crescimento": {
+      "usuariosIniciais": 50,
+      "mesInicioUsuario": 1,
+      "aumentoAbsolutoMensal": 200,
+      "metaUsuarios6m": 1200,
+      "periodoProjecao": 24
+    },
+    "iaOperacionais": {
+      "usdBrl": 5.20,
+      "iofRate": 6.38,
+      "modeloOpenAI": "gpt-5",
+      "custoInputToken": 4.00,
+      "custoOutputToken": 16.00,
+      "custoFixoMensal": 15000,
+      "ttsAtivo": true,
+      "custoTTS": 0.008,
+      "tokensPerCredito": 200
+    },
+    "consumoReal": {
+      "consumoFree": 90,
+      "consumoBasico": 95,
+      "consumoPro": 98,
+      "consumoMax": 99,
+      "consumoAvulso": 99,
+      "consumoTeste": 95
+    },
+    "planos": {
+      "free": {
+        "creditos": 20,
+        "preco": 0
+      },
+      "basico": {
+        "creditos": 500,
+        "preco": 79.90
+      },
+      "pro": {
+        "creditos": 2500,
+        "preco": 299.90
+      },
+      "max": {
+        "creditos": 12000,
+        "preco": 999.90
+      }
+    },
+    "distribuicao": {
+      "percentFree": 25,
+      "percentBasic": 20,
+      "percentPro": 40,
+      "percentMax": 15
+    },
+    "creditosAvulsos": {
+      "pacoteCreditos": 300,
+      "precoPackage": 59.90,
+      "percentualUsuarios": 35,
+      "pacotesPorUsuario": 2.5,
+      "posPago": true,
+      "riscoInadimplencia": 6
+    },
+    "churn": {
+      "churnPagos": 3,
+      "churnFree": 8
+    },
+    "testeGratuito": {
+      "creditosIniciais": 150,
+      "percentualUsuarios": 60
+    },
+    "avancados": {
+      "inputOutputMix": 60,
+      "cac": 300,
+      "ttsUsagePercent": 12,
+      "ttsMinutesPerCredit": 0.04
+    }
+  },
+  "observacoes": "Cenário futuro com GPT-5: maior capacidade, TTS mais eficiente, baixo churn devido à qualidade superior, preços premium justificados pela performance"
+}
