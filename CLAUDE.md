@@ -31,7 +31,7 @@ The application follows a **single-page architecture** with:
 - **Financial Calculations**: 
   - `calculateCosts()` - Computes per-credit costs including USD/BRL conversion and IOF
   - `calculateRevenue()` - Models subscription and one-time credit sales revenue
-  - `calculateKPIs()` - Business metrics (MRR, ARR, LTV, ROI, margin, break-even)
+  - `calculateKPIs()` - Business metrics (MRR, ARR, LTV, ROI, margin, break-even, payback)
 - **Growth Simulation**: `simulateGrowth()` projects user base over time
 - **Visualization**: Chart.js integration for user evolution and financial trends
 - **Scenario System**: JSON-based configuration save/load with localStorage persistence

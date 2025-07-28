@@ -71,7 +71,6 @@
     },
     "avancados": {
       "inputOutputMix": 75,
-      "cac": 100,
       "ttsUsagePercent": 8,
       "ttsMinutesPerCredit": 0.5
     }

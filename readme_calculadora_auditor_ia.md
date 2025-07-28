@@ -72,7 +72,7 @@ Adote 1 crédito = 100 tokens.
 - **Créditos Iniciais**: volume de créditos gratuitos para novos usuários.
 - Permite experiência sem necessidade de cartão.
 
-> **Avaliação**: impacto no CAC e na conversão para plano pago.
+> **Avaliação**: impacto na conversão para plano pago.
 
 ---
 
@@ -107,8 +107,8 @@ Adote 1 crédito = 100 tokens.
 - **MRR**: receita recorrente média mensal
 - **ARR**: receita anual recorrente
 - **LTV**: valor vitalício por cliente
-- **Payback Period**: meses para recuperar CAC
-- **ROI (%)**: (LTV − CAC)/CAC × 100
+- **Payback Period**: meses para recuperar investimento inicial
+- **ROI (%)**: (Lucro Total ÷ Custo Total) × 100
 - **Margem Bruta (%)**: (Receita − Custos)/Receita × 100
 - **Lucro Líquido Mensal**: Receita − Custos (incluir sempre o custo fixo)
 

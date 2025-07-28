@@ -235,7 +235,6 @@ function getParameters() {
         consumptionTrial: parseFloat(document.getElementById('consumptionTrial').value) / 100 || 0.80,
         tokensPerCredit: parseFloat(document.getElementById('tokensPerCredit').value) || 1000,
         inputOutputMix: parseFloat(document.getElementById('inputOutputMix').value) / 100 || 0.70,
-        cac: parseFloat(document.getElementById('cac').value) || 150,
         ttsUsagePercent: parseFloat(document.getElementById('ttsUsagePercent').value) / 100 || 0.05,
         ttsMinutesPerCredit: parseFloat(document.getElementById('ttsMinutesPerCredit').value) || 0.02,
         creditsFree: parseInt(document.getElementById('creditsFree').value) || 0,
@@ -1426,7 +1425,6 @@ async function loadBuiltinScenario(filename) {
                     },
                     avancados: {
                         inputOutputMix: 70,
-                        cac: 50,
                         ttsUsagePercent: 5,
                         ttsMinutesPerCredit: 0.02
                     }
@@ -1514,12 +1512,10 @@ function applyScenarioToForm(scenario) {
         if (params.avancados) {
             
             const mixField = document.getElementById('inputOutputMix');
-            const cacField = document.getElementById('cac');
             const ttsUsageField = document.getElementById('ttsUsagePercent');
             const ttsMinutesField = document.getElementById('ttsMinutesPerCredit');
             
             if (mixField && params.avancados.inputOutputMix) mixField.value = params.avancados.inputOutputMix;
-            if (cacField && params.avancados.cac) cacField.value = params.avancados.cac;
             if (ttsUsageField && params.avancados.ttsUsagePercent) ttsUsageField.value = params.avancados.ttsUsagePercent;
             if (ttsMinutesField && params.avancados.ttsMinutesPerCredit) ttsMinutesField.value = params.avancados.ttsMinutesPerCredit;
             
@@ -1667,7 +1663,6 @@ function getCurrentScenarioData() {
             },
             avancados: {
                 inputOutputMix: parseFloat(document.getElementById('inputOutputMix').value) || 70,
-                cac: parseFloat(document.getElementById('cac').value) || 150,
                 ttsUsagePercent: parseFloat(document.getElementById('ttsUsagePercent').value) || 5,
                 ttsMinutesPerCredit: parseFloat(document.getElementById('ttsMinutesPerCredit').value) || 0.02
             }
