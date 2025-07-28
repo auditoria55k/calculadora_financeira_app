@@ -53,6 +53,18 @@ function setupInputListeners() {
             input.addEventListener('input', updateFreePercentage);
             input.addEventListener('change', updateFreePercentage);
         }
+        
+        // Listener especial para projectMonths com validação em tempo real
+        if (input.id === 'projectMonths') {
+            input.addEventListener('input', function() {
+                const value = parseInt(this.value);
+                if (value > 1500) {
+                    this.value = 1500;
+                } else if (value < 1) {
+                    this.value = 1;
+                }
+            });
+        }
     });
 }
 
@@ -62,6 +74,13 @@ function handleInputChange() {
         // Verificar se o campo projectMonths foi alterado
         const projectMonthsField = document.getElementById('projectMonths');
         if (projectMonthsField && document.activeElement === projectMonthsField) {
+            // Validar valor máximo
+            const value = parseInt(projectMonthsField.value);
+            if (value > 1500) {
+                projectMonthsField.value = 1500;
+            } else if (value < 1) {
+                projectMonthsField.value = 1;
+            }
             updateMonthRangeMax();
         }
         
@@ -454,13 +473,9 @@ function updateMonthRangeMax() {
     monthStart.max = projectMonths;
     monthEnd.max = projectMonths;
     
-    // Adjust current values if they exceed the new max
-    if (parseInt(monthStart.value) > projectMonths) {
-        monthStart.value = projectMonths;
-    }
-    if (parseInt(monthEnd.value) > projectMonths) {
-        monthEnd.value = projectMonths;
-    }
+    // Ajustar automaticamente para cobrir todo o range quando o período for alterado
+    monthStart.value = 1;
+    monthEnd.value = projectMonths;
     
     updateTimeFilterDisplay();
 }

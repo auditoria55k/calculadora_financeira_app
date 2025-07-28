@@ -368,6 +368,28 @@
             margin-bottom: 16px;
         }
         
+        /* Estilo especial para o último card (custos fixos) ocupar apenas 1 coluna */
+        .kpi-card:last-child {
+            grid-column: 1 / 2;
+        }
+        
+        /* Estilos para destacar diferentes seções dos KPIs */
+        .kpi-card:nth-child(-n+4) {
+            border-left: 3px solid #238636; /* Verde para KPIs macro */
+        }
+        
+        .kpi-card:nth-child(n+5):nth-child(-n+8) {
+            border-left: 3px solid #0969da; /* Azul para resultados totais */
+        }
+        
+        .kpi-card:nth-child(n+9):nth-child(-n+12) {
+            border-left: 3px solid #6f42c1; /* Roxo para análise por crédito */
+        }
+        
+        .kpi-card:last-child {
+            border-left: 3px solid #f85149; /* Vermelho para custos fixos */
+        }
+        
         .kpi-card {
             background: rgba(33, 38, 45, 0.8);
             border: 1px solid #30363d;
@@ -564,7 +586,12 @@
             }
             
             .kpis-grid {
-                grid-template-columns: repeat(2, 1fr);
+                grid-template-columns: repeat(3, 1fr);
+            }
+            
+            /* Em telas médias, o último card pode ocupar mais espaço */
+            .kpi-card:last-child {
+                grid-column: 1 / 3;
             }
         }
         
@@ -589,9 +616,13 @@
                 grid-template-columns: 1fr;
             }
             
-            
             .kpis-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            /* Em telas pequenas, o último card volta ao normal */
+            .kpi-card:last-child {
+                grid-column: auto;
             }
             
             .header {
@@ -602,6 +633,36 @@
             
             .header-buttons {
                 order: -1;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .kpis-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            /* Em telas muito pequenas, todos os cards ficam em coluna única */
+            .kpi-card:last-child {
+                grid-column: auto;
+            }
+        }
+        
+        /* Responsividade para os títulos das seções */
+        @media (max-width: 1200px) {
+            .kpi-sections-titles {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .kpi-sections-titles {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .kpi-sections-titles {
+                grid-template-columns: 1fr !important;
             }
         }
         
@@ -638,6 +699,10 @@
             pointer-events: none;
             opacity: 0;
             transition: opacity 0.2s;
+            white-space: pre-line;
+            line-height: 1.4;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
         }
         
         .tooltip.show {
@@ -688,7 +753,7 @@
                     </div>
                     <div class="form-group">
                         <label data-tooltip="Número total de meses para análise (ex.: 12)">Período de Projeção (meses)</label>
-                        <input type="number" id="projectMonths" value="12" min="1" max="24">
+                        <input type="number" id="projectMonths" value="12" min="1" max="1500">
                     </div>
                 </div>
                 
@@ -976,58 +1041,73 @@
                     </div>
                 </div>
                 
+                <!-- Títulos das seções de KPIs -->
+                <div class="kpi-sections-titles" style="margin-bottom: 12px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+                    <div style="color: #238636; font-size: 11px; font-weight: 600; text-align: center; padding: 4px; background: rgba(35, 134, 54, 0.1); border-radius: 4px; border: 1px solid rgba(35, 134, 54, 0.3);">📊 KPIs MACRO</div>
+                    <div style="color: #0969da; font-size: 11px; font-weight: 600; text-align: center; padding: 4px; background: rgba(9, 105, 218, 0.1); border-radius: 4px; border: 1px solid rgba(9, 105, 218, 0.3);">💰 RESULTADOS</div>
+                    <div style="color: #6f42c1; font-size: 11px; font-weight: 600; text-align: center; padding: 4px; background: rgba(111, 66, 193, 0.1); border-radius: 4px; border: 1px solid rgba(111, 66, 193, 0.3);">📈 POR CRÉDITO</div>
+                    <div style="color: #f85149; font-size: 11px; font-weight: 600; text-align: center; padding: 4px; background: rgba(248, 81, 73, 0.1); border-radius: 4px; border: 1px solid rgba(248, 81, 73, 0.3);">⚙️ CUSTOS FIXOS</div>
+                </div>
+                
                 <div class="kpis-grid">
-                    <div class="kpi-card" data-tooltip="Break Even: Número de usuários para receita = custos">
+                    <!-- PRIMEIRA LINHA: KPIs MACRO (4 cards) -->
+                    <div class="kpi-card" data-tooltip="Break Even: Número de usuários necessários para que a receita total seja igual aos custos totais.\n\nIndica o ponto de equilíbrio do negócio.">
                         <div class="kpi-title">Break Even</div>
                         <div class="kpi-value" id="breakEven">0 usuários</div>
                     </div>
-                    <div class="kpi-card" data-tooltip="Payback: Mês onde o ROI acumulado se torna positivo">
+                    <div class="kpi-card" data-tooltip="Payback: Mês em que o investimento inicial é recuperado através dos lucros acumulados.\n\nMostra quando o negócio se torna lucrativo.">
                         <div class="kpi-title">Payback</div>
                         <div class="kpi-value" id="payback">Mês 0</div>
                     </div>
-                    <div class="kpi-card" data-tooltip="ROI: Lucro ÷ Custo Total">
+                    <div class="kpi-card" data-tooltip="ROI: Retorno sobre Investimento\n\nFórmula: (Lucro Total ÷ Custo Total) × 100\n\nIndica a rentabilidade do investimento.">
                         <div class="kpi-title">ROI</div>
                         <div class="kpi-value" id="roi">0%</div>
                     </div>
-                    <div class="kpi-card" data-tooltip="Margem: Lucro ÷ Receita Total">
+                    <div class="kpi-card" data-tooltip="Margem: Percentual de lucro sobre a receita total.\n\nFórmula: (Lucro Total ÷ Receita Total) × 100\n\nMostra a eficiência operacional.">
                         <div class="kpi-title">Margem</div>
                         <div class="kpi-value" id="margin">0%</div>
                     </div>
-                    <div class="kpi-card" data-tooltip="Lucro Total: Receita Total - Custos Totais (período selecionado)">
+                    
+                    <!-- SEGUNDA LINHA: RESULTADOS TOTAIS (4 cards) -->
+                    <div class="kpi-card" data-tooltip="Lucro Total: Resultado financeiro do período selecionado.\n\nFórmula: Receita Total - Custos Totais\n\nIndica o ganho real do negócio.">
                         <div class="kpi-title">Lucro Total</div>
                         <div class="kpi-value" id="profit">R$ 0</div>
                     </div>
-                    <div class="kpi-card" data-tooltip="Custo por Crédito: Custo médio de processamento">
-                        <div class="kpi-title">Custo/Crédito</div>
-                        <div class="kpi-value" id="costPerCredit">R$ 0</div>
-                    </div>
-                    <div class="kpi-card" data-tooltip="Receita por Crédito: Receita Total ÷ Créditos Consumidos">
-                        <div class="kpi-title">Receita/Crédito</div>
-                        <div class="kpi-value" id="revenuePerCredit">R$ 0</div>
-                    </div>
-                    <div class="kpi-card" data-tooltip="Lucro por Crédito: Receita por Crédito - Custo por Crédito">
-                        <div class="kpi-title">Lucro/Crédito</div>
-                        <div class="kpi-value" id="profitPerCredit">R$ 0 (0%)</div>
-                    </div>
-                    <div class="kpi-card" data-tooltip="Receita Total: Soma de todas as receitas">
+                    <div class="kpi-card" data-tooltip="Receita Total: Soma de todas as receitas geradas no período.\n\nInclui: Planos + Avulsos + Testes\n\nRepresenta o faturamento total.">
                         <div class="kpi-title">Receita Total</div>
                         <div class="kpi-value" id="totalRevenue">R$ 0</div>
                     </div>
-                    <div class="kpi-card" data-tooltip="Créditos Consumidos: Total de créditos utilizados pelos usuários">
-                        <div class="kpi-title">Créditos Consumidos</div>
-                        <div class="kpi-value" id="creditsConsumed">0</div>
-                    </div>
-                    <div class="kpi-card" data-tooltip="Custo Total: Custos Fixos + Custos Variáveis">
+                    <div class="kpi-card" data-tooltip="Custo Total: Soma de todos os custos do período.\n\nFórmula: Custos Fixos + Custos Variáveis\n\nRepresenta o investimento total.">
                         <div class="kpi-title">Custo Total</div>
                         <div class="kpi-value" id="totalCosts">R$ 0</div>
                     </div>
-                    <div class="kpi-card" data-tooltip="Custos Fixos: Custos mensais independentes do uso">
-                        <div class="kpi-title">Custos Fixos</div>
-                        <div class="kpi-value" id="fixedCosts">R$ 0</div>
+                    <div class="kpi-card" data-tooltip="Créditos Consumidos: Total de créditos utilizados pelos usuários no período.\n\nIndica o volume de uso da plataforma.\n\nBase para cálculo de custos variáveis.">
+                        <div class="kpi-title">Créditos Consumidos</div>
+                        <div class="kpi-value" id="creditsConsumed">0</div>
                     </div>
-                    <div class="kpi-card" data-tooltip="Custos Variáveis: Custos baseados no uso de créditos">
+                    
+                    <!-- TERCEIRA LINHA: ANÁLISE POR CRÉDITO (4 cards) -->
+                    <div class="kpi-card" data-tooltip="Receita por Crédito: Valor médio recebido por cada crédito consumido.\n\nFórmula: Receita Total ÷ Créditos Consumidos\n\nIndica a monetização por uso.">
+                        <div class="kpi-title">Receita/Crédito</div>
+                        <div class="kpi-value" id="revenuePerCredit">R$ 0</div>
+                    </div>
+                    <div class="kpi-card" data-tooltip="Custo por Crédito: Custo médio de processamento de cada crédito.\n\nInclui: Tokens + TTS/STT + IOF\n\nBase para precificação.">
+                        <div class="kpi-title">Custo/Crédito</div>
+                        <div class="kpi-value" id="costPerCredit">R$ 0</div>
+                    </div>
+                    <div class="kpi-card" data-tooltip="Lucro por Crédito: Ganho médio por crédito processado.\n\nFórmula: Receita/Crédito - Custo/Crédito\n\nIndica a rentabilidade unitária.">
+                        <div class="kpi-title">Lucro/Crédito</div>
+                        <div class="kpi-value" id="profitPerCredit">R$ 0 (0%)</div>
+                    </div>
+                    <div class="kpi-card" data-tooltip="Custos Variáveis: Custos que variam com o volume de uso.\n\nInclui: Processamento de tokens + TTS/STT\n\nCresce proporcionalmente ao uso.">
                         <div class="kpi-title">Custos Variáveis</div>
                         <div class="kpi-value" id="variableCosts">R$ 0</div>
+                    </div>
+                    
+                    <!-- QUARTA LINHA: CUSTOS FIXOS (1 card) -->
+                    <div class="kpi-card" data-tooltip="Custos Fixos: Custos mensais que não variam com o uso.\n\nInclui: Infraestrutura + Equipe + Marketing\n\nBase para cálculo de break even.">
+                        <div class="kpi-title">Custos Fixos</div>
+                        <div class="kpi-value" id="fixedCosts">R$ 0</div>
                     </div>
                 </div>
             </div>
