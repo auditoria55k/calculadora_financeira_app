@@ -72,8 +72,8 @@
     "avancados": {
       "inputOutputMix": 70,
       "cac": 150,
-      "ttsUsagePercent": 5,
-      "ttsMinutesPerCredit": 0.02
+      "ttsUsagePercent": 12,
+      "ttsMinutesPerCredit": 0.75
     }
   },
   "observacoes": "Configuração padrão com plano Free, distribuição realista e churn controlado"

@@ -941,11 +941,11 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label data-tooltip="% dos créditos que usam funcionalidades TTS/STT quando ativo">% Uso TTS/STT</label>
-                            <input type="number" id="ttsUsagePercent" value="5" step="1" min="1" max="20">
+                            <input type="number" id="ttsUsagePercent" value="12" step="1" min="1" max="20">
                         </div>
                         <div class="form-group">
                             <label data-tooltip="Duração média em minutos de TTS/STT por crédito usado">Min TTS/Crédito</label>
-                            <input type="number" id="ttsMinutesPerCredit" value="0.02" step="0.01" min="0.01" max="0.1">
+                            <input type="number" id="ttsMinutesPerCredit" value="0.75" step="0.01" min="0.01" max="0.1">
                         </div>
                     </div>
                 </div>
@@ -981,6 +981,10 @@
                         <div class="kpi-title">Break Even</div>
                         <div class="kpi-value" id="breakEven">0 usuários</div>
                     </div>
+                    <div class="kpi-card" data-tooltip="Payback: Mês onde o ROI acumulado se torna positivo">
+                        <div class="kpi-title">Payback</div>
+                        <div class="kpi-value" id="payback">Mês 0</div>
+                    </div>
                     <div class="kpi-card" data-tooltip="ROI: Lucro ÷ Custo Total">
                         <div class="kpi-title">ROI</div>
                         <div class="kpi-value" id="roi">0%</div>
@@ -989,8 +993,8 @@
                         <div class="kpi-title">Margem</div>
                         <div class="kpi-value" id="margin">0%</div>
                     </div>
-                    <div class="kpi-card" data-tooltip="Lucro: Receita Total - Custos Totais">
-                        <div class="kpi-title">Lucro/Mês</div>
+                    <div class="kpi-card" data-tooltip="Lucro Total: Receita Total - Custos Totais (período selecionado)">
+                        <div class="kpi-title">Lucro Total</div>
                         <div class="kpi-value" id="profit">R$ 0</div>
                     </div>
                     <div class="kpi-card" data-tooltip="Custo por Crédito: Custo médio de processamento">

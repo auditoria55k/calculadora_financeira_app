@@ -643,10 +643,64 @@ function calculateBreakEven(params, costs) {
     return breakEvenUsers;
 }
 
+function calculatePayback(params, costs) {
+    // Calcular o mês onde o ROI acumulado se torna positivo
+    let accumulatedProfit = 0;
+    let accumulatedCosts = 0;
+    
+    for (let month = 1; month <= params.projectMonths; month++) {
+        // Simular crescimento de usuários até este mês
+        let currentUsers = params.initialUsers;
+        for (let m = params.startMonth; m <= month; m++) {
+            currentUsers += params.monthlyUserIncrease;
+        }
+        currentUsers = Math.floor(currentUsers);
+        
+        if (currentUsers > 0) {
+            // Calcular receita e custos para este mês
+            const revenue = calculateRevenue(params, costs, currentUsers);
+            const distribution = calculateUserDistribution(params, currentUsers);
+            
+            // Calcular créditos consumidos
+            const freeCredits = distribution.freeUsers * params.creditsFree * params.consumptionFree;
+            const basicCredits = distribution.basicUsers * params.creditsBasic * params.consumptionBasic;
+            const proCredits = distribution.proUsers * params.creditsPro * params.consumptionPro;
+            const maxCredits = distribution.maxUsers * params.creditsMax * params.consumptionMax;
+            
+            const trialUsers = Math.floor(currentUsers * params.trialPercentage);
+            const trialCredits = trialUsers * params.trialCredits * params.consumptionTrial;
+            
+            const avulsoUsers = Math.floor(currentUsers * params.avulsoPercentage);
+            const avulsoCredits = avulsoUsers * params.avulsoPackagesPerUser * params.avulsoCredits * params.consumptionAvulso;
+            
+            const creditsConsumed = freeCredits + basicCredits + proCredits + maxCredits + trialCredits + avulsoCredits;
+            const variableCosts = creditsConsumed * costs.costPerCredit;
+            const totalCosts = costs.fixedMonthlyCost + variableCosts;
+            
+            const monthlyProfit = revenue.totalRevenue - totalCosts;
+            accumulatedProfit += monthlyProfit;
+            accumulatedCosts += totalCosts;
+            
+            // Verificar se o ROI acumulado se tornou positivo
+            if (accumulatedProfit > 0 && accumulatedCosts > 0) {
+                return month;
+            }
+        } else {
+            // Mesmo sem usuários, há custos fixos
+            accumulatedCosts += costs.fixedMonthlyCost;
+        }
+    }
+    
+    return null; // Não atingiu payback no período analisado
+}
+
 function displayKPIs(kpis, growth, params, costs, startMonth, endMonth, creditsConsumed) {
     
     // Calcular break even separadamente
     const breakEvenUsers = calculateBreakEven(params, costs);
+    
+    // Calcular payback
+    const paybackMonth = calculatePayback(params, costs);
     
     // Usar créditos consumidos ou estimados
     const totalCredits = creditsConsumed > 0 ? creditsConsumed : kpis.estimatedCreditsUsed || 0;
@@ -658,6 +712,7 @@ function displayKPIs(kpis, growth, params, costs, startMonth, endMonth, creditsC
     document.getElementById('margin').textContent = kpis.margin.toFixed(1) + '%';
     document.getElementById('roi').textContent = kpis.roi.toFixed(1) + '%';
     document.getElementById('breakEven').textContent = breakEvenUsers + ' usuários';
+    document.getElementById('payback').textContent = paybackMonth ? `Mês ${paybackMonth}` : 'Não atingido';
     document.getElementById('costPerCredit').textContent = formatCurrency(costs.costPerCredit);
     document.getElementById('revenuePerCredit').textContent = formatCurrency(kpis.revenuePerCredit);
     document.getElementById('profitPerCredit').textContent = formatCurrency(kpis.profitPerCredit) + ' (' + kpis.profitMarginPerCredit.toFixed(1) + '%)';
@@ -666,11 +721,12 @@ function displayKPIs(kpis, growth, params, costs, startMonth, endMonth, creditsC
     document.getElementById('variableCosts').textContent = formatCurrency(kpis.variableCosts);
     
     // Atualizar tooltips com cálculos explicativos
-    updateKPITooltips(kpis, costs, totalCredits);
+    updateKPITooltips(kpis, costs, totalCredits, breakEvenUsers, paybackMonth);
     
 }
 
-function updateKPITooltips(kpis, costs, totalCredits) {
+function updateKPITooltips(kpis, costs, totalCredits, breakEvenUsers, paybackMonth) {
+    const params = getParameters(); // Obter parâmetros para usar no tooltip do payback
     // ROI: lucro dividido pelo custo
     const roiElement = document.getElementById('roi');
     if (roiElement) {
@@ -695,13 +751,13 @@ function updateKPITooltips(kpis, costs, totalCredits) {
         }
     }
     
-    // Lucro: receita menos despesa
+    // Lucro Total: receita menos despesa (período selecionado)
     const profitElement = document.getElementById('profit');
     if (profitElement) {
         const profitCard = profitElement.closest('.kpi-card');
         if (profitCard) {
             profitCard.setAttribute('data-tooltip', 
-                `Lucro: Receita Total - Custos Totais\n` +
+                `Lucro Total: Receita Total - Custos Totais (período selecionado)\n` +
                 `${formatCurrency(kpis.totalRevenue)} - ${formatCurrency(kpis.totalCosts)} = ${formatCurrency(kpis.profit)}`
             );
         }
@@ -813,6 +869,21 @@ function updateKPITooltips(kpis, costs, totalCredits) {
                 `Break Even: Número de usuários para receita = custos\n` +
                 `Ponto onde o lucro é zero = ${breakEvenUsers}`
             );
+        }
+    }
+    
+    // Payback
+    const paybackElement = document.getElementById('payback');
+    if (paybackElement) {
+        const paybackCard = paybackElement.closest('.kpi-card');
+        if (paybackCard) {
+            const paybackText = paybackElement.textContent;
+            const paybackDescription = paybackMonth ? 
+                `Payback: Mês onde o ROI acumulado se torna positivo\n` +
+                `Lucro acumulado se torna positivo no ${paybackText}` :
+                `Payback: Mês onde o ROI acumulado se torna positivo\n` +
+                `Não atingido no período analisado (${params.projectMonths} meses)`;
+            paybackCard.setAttribute('data-tooltip', paybackDescription);
         }
     }
 }

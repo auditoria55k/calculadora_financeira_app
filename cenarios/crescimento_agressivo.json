@@ -72,8 +72,8 @@
     "avancados": {
       "inputOutputMix": 65,
       "cac": 200,
-      "ttsUsagePercent": 8,
-      "ttsMinutesPerCredit": 0.03
+      "ttsUsagePercent": 15,
+      "ttsMinutesPerCredit": 1.0
     }
   },
   "observacoes": "Cenário agressivo com baixo churn, alta conversão para planos pagos e receita premium"

@@ -72,8 +72,8 @@
     "avancados": {
       "inputOutputMix": 60,
       "cac": 300,
-      "ttsUsagePercent": 12,
-      "ttsMinutesPerCredit": 0.04
+      "ttsUsagePercent": 18,
+      "ttsMinutesPerCredit": 1.2
     }
   },
   "observacoes": "Cenário futuro com GPT-5: maior capacidade, TTS mais eficiente, baixo churn devido à qualidade superior, preços premium justificados pela performance"

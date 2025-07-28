@@ -72,8 +72,8 @@
     "avancados": {
       "inputOutputMix": 75,
       "cac": 100,
-      "ttsUsagePercent": 3,
-      "ttsMinutesPerCredit": 0.015
+      "ttsUsagePercent": 8,
+      "ttsMinutesPerCredit": 0.5
     }
   },
   "observacoes": "Cenário conservador com alta proporção de usuários free e churn elevado"
