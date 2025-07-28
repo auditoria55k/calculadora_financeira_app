@@ -751,8 +751,8 @@
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label data-tooltip="Quantos tokens equivalem a 1 crédito (padrão: 100 tokens = 1 crédito)">Tokens por Crédito</label>
-                            <input type="number" id="tokensPerCredit" value="100" step="10" min="10" max="1000">
+                            <label data-tooltip="Quantos tokens equivalem a 1 crédito (padrão: 1000 tokens = 1 crédito)">Tokens por Crédito</label>
+                            <input type="number" id="tokensPerCredit" value="1000" step="10" min="10" max="1000">
                         </div>
                         <div class="form-group">
                             <label data-tooltip="Custo final por crédito em R$ (calculado automaticamente)">Custo/Crédito Final</label>
@@ -779,7 +779,7 @@
                         <tbody>
                             <tr>
                                 <td><strong>Free</strong></td>
-                                <td><input type="number" id="creditsFree" value="10" step="5" min="0"></td>
+                                <td><input type="number" id="creditsFree" value="15" step="5" min="0"></td>
                                 <td><input type="number" id="priceFree" value="0" step="0" min="0" max="0" readonly></td>
                             </tr>
                             <tr>
@@ -806,21 +806,21 @@
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Free %</label>
-                                <input type="number" id="percentFree" value="40" min="0" max="100" readonly>
+                                <input type="number" id="percentFree" value="60" min="0" max="100" readonly>
                             </div>
                             <div class="form-group">
                                 <label>Básico %</label>
-                                <input type="number" id="percentBasic" value="30" min="0" max="100">
+                                <input type="number" id="percentBasic" value="25" min="0" max="100">
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 <label>Pró %</label>
-                                <input type="number" id="percentPro" value="25" min="0" max="100">
+                                <input type="number" id="percentPro" value="15" min="0" max="100">
                             </div>
                             <div class="form-group">
                                 <label>Max %</label>
-                                <input type="number" id="percentMax" value="5" min="0" max="100">
+                                <input type="number" id="percentMax" value="0" min="0" max="100">
                             </div>
                         </div>
                         <div class="percentage-total" style="text-align: center; font-size: 11px; color: #7d8590; margin-top: 4px;">
@@ -866,31 +866,31 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label data-tooltip="% dos créditos Free que são realmente consumidos por mês (ex: 80% = usuário usa 8 de 10 créditos)">Consumo Free (%)</label>
-                            <input type="number" id="consumptionFree" value="75" step="5" min="10" max="100">
+                            <input type="number" id="consumptionFree" value="100" step="5" min="10" max="100">
                         </div>
                         <div class="form-group">
                             <label data-tooltip="% dos créditos Básico que são realmente consumidos por mês">Consumo Básico (%)</label>
-                            <input type="number" id="consumptionBasic" value="85" step="5" min="20" max="100">
+                            <input type="number" id="consumptionBasic" value="100" step="5" min="20" max="100">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label data-tooltip="% dos créditos Pró que são realmente consumidos por mês">Consumo Pró (%)</label>
-                            <input type="number" id="consumptionPro" value="90" step="5" min="30" max="100">
+                            <input type="number" id="consumptionPro" value="100" step="5" min="30" max="100">
                         </div>
                         <div class="form-group">
                             <label data-tooltip="% dos créditos Max que são realmente consumidos por mês">Consumo Max (%)</label>
-                            <input type="number" id="consumptionMax" value="95" step="5" min="40" max="100">
+                            <input type="number" id="consumptionMax" value="100" step="5" min="40" max="100">
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
                             <label data-tooltip="% dos créditos Avulsos que são realmente consumidos (comprados mas não usados completamente)">Consumo Avulso (%)</label>
-                            <input type="number" id="consumptionAvulso" value="95" step="5" min="50" max="100">
+                            <input type="number" id="consumptionAvulso" value="100" step="5" min="50" max="100">
                         </div>
                         <div class="form-group">
                             <label data-tooltip="% dos créditos de Teste Gratuito que são realmente consumidos">Consumo Teste (%)</label>
-                            <input type="number" id="consumptionTrial" value="80" step="5" min="30" max="100">
+                            <input type="number" id="consumptionTrial" value="100" step="5" min="30" max="100">
                         </div>
                     </div>
                 </div>
@@ -916,7 +916,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label data-tooltip="Volume de créditos gratuitos para novos usuários">Créditos Iniciais</label>
-                            <input type="number" id="trialCredits" value="50" step="10" min="10">
+                            <input type="number" id="trialCredits" value="25" step="10" min="10">
                         </div>
                         <div class="form-group">
                             <label data-tooltip="Percentual de novos usuários que usam teste">% Usuários Teste</label>
@@ -1055,6 +1055,8 @@
                                 <th>F/B/P/M</th>
                                 <th>Receita Planos</th>
                                 <th>Receita Avulso</th>
+                                <th>Créditos</th>
+                                <th>Tokens</th>
                                 <th>Custo Var.</th>
                                 <th>Lucro</th>
                                 <th>Margem %</th>

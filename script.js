@@ -302,14 +302,14 @@ function calculateUserDistribution(params, totalUsers) {
     const proUsers = Math.floor(totalUsers * params.percentPro);
     const maxUsers = Math.floor(totalUsers * params.percentMax);
     
-    // Distribuir usuários restantes para o plano básico se houver diferença
+    // Distribuir usuários restantes para o plano FREE se houver diferença
     const distributedUsers = freeUsers + basicUsers + proUsers + maxUsers;
     const remainingUsers = totalUsers - distributedUsers;
-    const adjustedBasicUsers = basicUsers + remainingUsers;
+    const adjustedFreeUsers = freeUsers + remainingUsers;
     
     const distribution = {
-        freeUsers: freeUsers,
-        basicUsers: adjustedBasicUsers,
+        freeUsers: adjustedFreeUsers,
+        basicUsers: basicUsers,
         proUsers: proUsers,
         maxUsers: maxUsers
     };
@@ -368,12 +368,13 @@ function calculateKPIs(revenue, costs, params, users) {
     let estimatedCreditsUsed = totalCreditsUsed;
     if (estimatedCreditsUsed === 0 && users > 0) {
         const distribution = calculateUserDistribution(params, users);
+        // Usuários Free: 15 créditos mensais
         estimatedCreditsUsed = (distribution.freeUsers * params.creditsFree * params.consumptionFree) +
                               (distribution.basicUsers * params.creditsBasic * params.consumptionBasic) +
                               (distribution.proUsers * params.creditsPro * params.consumptionPro) +
                               (distribution.maxUsers * params.creditsMax * params.consumptionMax);
         
-        // Adicionar créditos de teste e avulsos
+        // Adicionar créditos de teste (apenas para novos usuários) e avulsos
         const trialUsers = Math.floor(users * params.trialPercentage);
         const avulsoUsers = Math.floor(users * params.avulsoPercentage);
         estimatedCreditsUsed += (trialUsers * params.trialCredits * params.consumptionTrial) +
@@ -481,8 +482,24 @@ function calculateAccumulatedData(growth, params, costs, startMonth, endMonth) {
             const revenue = calculateRevenue(params, costs, users);
             totalRevenue += revenue.totalRevenue;
             
-            // Calcular créditos consumidos para este mês
-            const monthCredits = calculateCreditsConsumed(params, costs, [monthData], i + 1, i + 1);
+            // Calcular créditos consumidos para este mês diretamente
+            const distribution = calculateUserDistribution(params, users);
+            
+            // Usuários Free: 15 créditos mensais
+            const freeCredits = distribution.freeUsers * params.creditsFree * params.consumptionFree;
+            const basicCredits = distribution.basicUsers * params.creditsBasic * params.consumptionBasic;
+            const proCredits = distribution.proUsers * params.creditsPro * params.consumptionPro;
+            const maxCredits = distribution.maxUsers * params.creditsMax * params.consumptionMax;
+            
+            // Créditos de teste (apenas uma vez por usuário novo)
+            const newUsersThisMonth = i === 0 ? users : Math.min(users - growth[i-1].users, users); // Usuários novos
+            const trialCredits = newUsersThisMonth * params.trialCredits * params.consumptionTrial;
+            
+            // Créditos avulsos (comprados separadamente)
+            const avulsoUsers = Math.floor(users * params.avulsoPercentage);
+            const avulsoCredits = avulsoUsers * params.avulsoPackagesPerUser * params.avulsoCredits * params.consumptionAvulso;
+            
+            const monthCredits = freeCredits + basicCredits + proCredits + maxCredits + trialCredits + avulsoCredits;
             totalCredits += monthCredits;
             
             // Calcular custos variáveis baseados no uso de créditos
@@ -526,16 +543,17 @@ function calculateCreditsConsumed(params, costs, growth, startMonth, endMonth) {
             const distribution = calculateUserDistribution(params, users);
             
             // Calcular créditos consumidos por plano
+            // Usuários Free: 15 créditos mensais + 25 créditos de teste (apenas para novos usuários)
             const freeCredits = distribution.freeUsers * params.creditsFree * params.consumptionFree;
             const basicCredits = distribution.basicUsers * params.creditsBasic * params.consumptionBasic;
             const proCredits = distribution.proUsers * params.creditsPro * params.consumptionPro;
             const maxCredits = distribution.maxUsers * params.creditsMax * params.consumptionMax;
             
-            // Créditos de teste gratuito
-            const trialUsers = Math.floor(users * params.trialPercentage);
-            const trialCredits = trialUsers * params.trialCredits * params.consumptionTrial;
+            // Créditos de teste (apenas uma vez por usuário novo)
+            const newUsersThisMonth = i === 0 ? users : Math.min(users - growth[i-1].users, users); // Usuários novos
+            const trialCredits = newUsersThisMonth * params.trialCredits * params.consumptionTrial;
             
-            // Créditos avulsos
+            // Créditos avulsos (comprados separadamente)
             const avulsoUsers = Math.floor(users * params.avulsoPercentage);
             const avulsoCredits = avulsoUsers * params.avulsoPackagesPerUser * params.avulsoCredits * params.consumptionAvulso;
             
@@ -589,7 +607,23 @@ function calculateBreakEven(params, costs) {
         const revenue = calculateRevenue(params, costs, mid);
         
         // Calcular custos variáveis baseados no número de usuários
-        const creditsConsumed = calculateCreditsConsumed(params, costs, [{users: mid}], 1, 1);
+        const distribution = calculateUserDistribution(params, mid);
+        
+        // Usuários Free: 15 créditos mensais
+        const freeCredits = distribution.freeUsers * params.creditsFree * params.consumptionFree;
+        const basicCredits = distribution.basicUsers * params.creditsBasic * params.consumptionBasic;
+        const proCredits = distribution.proUsers * params.creditsPro * params.consumptionPro;
+        const maxCredits = distribution.maxUsers * params.creditsMax * params.consumptionMax;
+        
+        // Créditos de teste (apenas para novos usuários)
+        const trialUsers = Math.floor(mid * params.trialPercentage);
+        const trialCredits = trialUsers * params.trialCredits * params.consumptionTrial;
+        
+        // Créditos avulsos (comprados separadamente)
+        const avulsoUsers = Math.floor(mid * params.avulsoPercentage);
+        const avulsoCredits = avulsoUsers * params.avulsoPackagesPerUser * params.avulsoCredits * params.consumptionAvulso;
+        
+        const creditsConsumed = freeCredits + basicCredits + proCredits + maxCredits + trialCredits + avulsoCredits;
         const variableCosts = creditsConsumed * costs.costPerCredit;
         const totalCosts = costs.fixedMonthlyCost + variableCosts;
         
@@ -789,7 +823,32 @@ function displayProjections(growth, params, costs) {
     
     growth.forEach(monthData => {
         const revenue = calculateRevenue(params, costs, monthData.users);
-        const kpis = calculateKPIs(revenue, costs, params, monthData.users);
+        
+        // Calcular créditos consumidos para este mês
+        const distribution = calculateUserDistribution(params, monthData.users);
+        
+        // Usuários Free: 15 créditos mensais
+        const freeCredits = distribution.freeUsers * params.creditsFree * params.consumptionFree;
+        const basicCredits = distribution.basicUsers * params.creditsBasic * params.consumptionBasic;
+        const proCredits = distribution.proUsers * params.creditsPro * params.consumptionPro;
+        const maxCredits = distribution.maxUsers * params.creditsMax * params.consumptionMax;
+        
+        // Créditos de teste (apenas para novos usuários)
+        const trialUsers = Math.floor(monthData.users * params.trialPercentage);
+        const trialCredits = trialUsers * params.trialCredits * params.consumptionTrial;
+        
+        // Créditos avulsos (comprados separadamente)
+        const avulsoUsers = Math.floor(monthData.users * params.avulsoPercentage);
+        const avulsoCredits = avulsoUsers * params.avulsoPackagesPerUser * params.avulsoCredits * params.consumptionAvulso;
+        
+        const monthCredits = freeCredits + basicCredits + proCredits + maxCredits + trialCredits + avulsoCredits;
+        const monthTokens = monthCredits * params.tokensPerCredit;
+        const variableCosts = monthCredits * costs.costPerCredit;
+        
+        // Calcular lucro e margem
+        const totalCosts = costs.fixedMonthlyCost + variableCosts;
+        const profit = revenue.totalRevenue - totalCosts;
+        const margin = revenue.totalRevenue > 0 ? (profit / revenue.totalRevenue) * 100 : 0;
         
         const row = tbody.insertRow();
         row.innerHTML = `
@@ -798,9 +857,11 @@ function displayProjections(growth, params, costs) {
             <td style="font-size: 10px;">${revenue.freeUsers}/${revenue.basicUsers}/${revenue.proUsers}/${revenue.maxUsers}</td>
             <td>R$ ${revenue.subscriptionRevenue.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
             <td>R$ ${revenue.avulsoRevenue.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
-            <td>R$ ${kpis.variableCosts.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
-            <td>R$ ${kpis.profit.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
-            <td>${kpis.margin.toFixed(1)}%</td>
+            <td>${monthCredits.toLocaleString('pt-BR')}</td>
+            <td>${monthTokens.toLocaleString('pt-BR')}</td>
+            <td>R$ ${variableCosts.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
+            <td>R$ ${profit.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
+            <td>${margin.toFixed(1)}%</td>
         `;
     });
 }

@@ -19,7 +19,7 @@
       "custoFixoMensal": 300,
       "ttsAtivo": false,
       "custoTTS": 0.0114,
-      "tokensPerCredito": 100
+      "tokensPerCredito": 1000
     },
     "consumoReal": {
       "consumoFree": 75,
