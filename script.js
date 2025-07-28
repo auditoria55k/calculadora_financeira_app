@@ -59,6 +59,12 @@ function setupInputListeners() {
 function handleInputChange() {
     clearTimeout(timeout);
     timeout = setTimeout(() => {
+        // Verificar se o campo projectMonths foi alterado
+        const projectMonthsField = document.getElementById('projectMonths');
+        if (projectMonthsField && document.activeElement === projectMonthsField) {
+            updateMonthRangeMax();
+        }
+        
         updatePercentageDisplay();
         calculatePricing();
     }, 100);
@@ -194,7 +200,6 @@ function getParameters() {
         initialUsers: parseInt(document.getElementById('initialUsers').value) || 0,
         startMonth: parseInt(document.getElementById('startMonth').value) || 1,
         monthlyUserIncrease: parseInt(document.getElementById('monthlyUserIncrease').value) || 0,
-        targetUsers6m: parseInt(document.getElementById('targetUsers6m').value) || 0,
         projectMonths: parseInt(document.getElementById('projectMonths').value) || 12,
         usdBrl: parseFloat(document.getElementById('usdBrl').value) || 5.80,
         iofRate: parseFloat(document.getElementById('iofRate').value) / 100 || 0,
@@ -209,7 +214,7 @@ function getParameters() {
         consumptionMax: parseFloat(document.getElementById('consumptionMax').value) / 100 || 0.95,
         consumptionAvulso: parseFloat(document.getElementById('consumptionAvulso').value) / 100 || 0.95,
         consumptionTrial: parseFloat(document.getElementById('consumptionTrial').value) / 100 || 0.80,
-        tokensPerCredit: parseFloat(document.getElementById('tokensPerCredit').value) || 100,
+        tokensPerCredit: parseFloat(document.getElementById('tokensPerCredit').value) || 1000,
         inputOutputMix: parseFloat(document.getElementById('inputOutputMix').value) / 100 || 0.70,
         cac: parseFloat(document.getElementById('cac').value) || 150,
         ttsUsagePercent: parseFloat(document.getElementById('ttsUsagePercent').value) / 100 || 0.05,
@@ -277,13 +282,8 @@ function simulateGrowth(params) {
     for (let month = 1; month <= params.projectMonths; month++) {
         // Aplicar crescimento apenas a partir do mês de início
         if (month >= params.startMonth) {
-            // Crescimento linear até atingir a meta
-            if (currentUsers < params.targetUsers6m) {
-                currentUsers += params.monthlyUserIncrease;
-                if (currentUsers > params.targetUsers6m) {
-                    currentUsers = params.targetUsers6m;
-                }
-            }
+            // Crescimento linear contínuo sem limitação de meta
+            currentUsers += params.monthlyUserIncrease;
         }
         
         growth.push({
@@ -802,11 +802,6 @@ function displayProjections(growth, params, costs) {
             <td>R$ ${kpis.profit.toLocaleString('pt-BR', {minimumFractionDigits: 0})}</td>
             <td>${kpis.margin.toFixed(1)}%</td>
         `;
-        
-        // Highlight target achievement
-        if (monthData.targetReached) {
-            row.style.background = 'rgba(46, 160, 67, 0.1)';
-        }
     });
 }
 
@@ -1130,7 +1125,6 @@ async function loadBuiltinScenario(filename) {
                         usuariosIniciais: 0,
                         mesInicioUsuario: 1,
                         aumentoAbsolutoMensal: 1,
-                        metaUsuarios6m: 5,
                         periodoProjecao: 24
                     },
                     iaOperacionais: {
@@ -1153,7 +1147,7 @@ async function loadBuiltinScenario(filename) {
                         percentMax: 0
                     },
                     creditosAvulsos: {
-                        pacoteCreditos: 1000,
+                        pacoteCreditos: 100,
                         precoPackage: 19.90,
                         percentualUsuarios: 1,
                         pacotesPorUsuario: 1,
@@ -1214,7 +1208,6 @@ function applyScenarioToForm(scenario) {
         document.getElementById('initialUsers').value = params.crescimento.usuariosIniciais;
         document.getElementById('startMonth').value = params.crescimento.mesInicioUsuario;
         document.getElementById('monthlyUserIncrease').value = params.crescimento.aumentoAbsolutoMensal;
-        document.getElementById('targetUsers6m').value = params.crescimento.metaUsuarios6m;
         document.getElementById('projectMonths').value = params.crescimento.periodoProjecao;
         
         // Aplicar parâmetros de IA
@@ -1329,6 +1322,9 @@ function applyScenarioToForm(scenario) {
         // Atualizar displays
         updatePercentageDisplay();
         
+        // Atualizar range máximo do slider após carregar cenário
+        updateMonthRangeMax();
+        
         // Reconfigurar listeners após carregar cenário
         setupInputListeners();
         
@@ -1354,7 +1350,6 @@ function getCurrentScenarioData() {
                 usuariosIniciais: parseInt(document.getElementById('initialUsers').value) || 0,
                 mesInicioUsuario: parseInt(document.getElementById('startMonth').value) || 1,
                 aumentoAbsolutoMensal: parseInt(document.getElementById('monthlyUserIncrease').value) || 0,
-                metaUsuarios6m: parseInt(document.getElementById('targetUsers6m').value) || 0,
                 periodoProjecao: parseInt(document.getElementById('projectMonths').value) || 12
             },
             iaOperacionais: {
@@ -1366,7 +1361,7 @@ function getCurrentScenarioData() {
                 custoFixoMensal: parseFloat(document.getElementById('fixedMonthlyCost').value) || 0,
                 ttsAtivo: document.getElementById('ttsActive').checked || false,
                 custoTTS: parseFloat(document.getElementById('ttsCost').value) || 0.0114,
-                tokensPerCredito: parseFloat(document.getElementById('tokensPerCredit').value) || 100
+                tokensPerCredito: parseFloat(document.getElementById('tokensPerCredit').value) || 1000
             },
             planos: {
                 free: {

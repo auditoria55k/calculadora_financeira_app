@@ -39,7 +39,6 @@ Este sistema permite salvar, carregar e gerenciar diferentes configurações (ce
       "usuariosIniciais": 0,
       "mesInicioUsuario": 1,
       "aumentoAbsolutoMensal": 50,
-      "metaUsuarios6m": 300,
       "periodoProjecao": 12
     },
     "iaOperacionais": {
