@@ -648,6 +648,7 @@ function calculatePayback(params, costs) {
     let accumulatedProfit = 0;
     let accumulatedCosts = 0;
     
+    // Primeiro, tentar no período configurado
     for (let month = 1; month <= params.projectMonths; month++) {
         // Simular crescimento de usuários até este mês
         let currentUsers = params.initialUsers;
@@ -691,7 +692,89 @@ function calculatePayback(params, costs) {
         }
     }
     
-    return null; // Não atingiu payback no período analisado
+    // Se não atingiu no período configurado, extrapolar para até 150 meses
+    const maxMonths = 150;
+    for (let month = params.projectMonths + 1; month <= maxMonths; month++) {
+        // Simular crescimento de usuários até este mês
+        let currentUsers = params.initialUsers;
+        for (let m = params.startMonth; m <= month; m++) {
+            currentUsers += params.monthlyUserIncrease;
+        }
+        currentUsers = Math.floor(currentUsers);
+        
+        if (currentUsers > 0) {
+            // Calcular receita e custos para este mês
+            const revenue = calculateRevenue(params, costs, currentUsers);
+            const distribution = calculateUserDistribution(params, currentUsers);
+            
+            // Calcular créditos consumidos
+            const freeCredits = distribution.freeUsers * params.creditsFree * params.consumptionFree;
+            const basicCredits = distribution.basicUsers * params.creditsBasic * params.consumptionBasic;
+            const proCredits = distribution.proUsers * params.creditsPro * params.consumptionPro;
+            const maxCredits = distribution.maxUsers * params.creditsMax * params.consumptionMax;
+            
+            const trialUsers = Math.floor(currentUsers * params.trialPercentage);
+            const trialCredits = trialUsers * params.trialCredits * params.consumptionTrial;
+            
+            const avulsoUsers = Math.floor(currentUsers * params.avulsoPercentage);
+            const avulsoCredits = avulsoUsers * params.avulsoPackagesPerUser * params.avulsoCredits * params.consumptionAvulso;
+            
+            const creditsConsumed = freeCredits + basicCredits + proCredits + maxCredits + trialCredits + avulsoCredits;
+            const variableCosts = creditsConsumed * costs.costPerCredit;
+            const totalCosts = costs.fixedMonthlyCost + variableCosts;
+            
+            const monthlyProfit = revenue.totalRevenue - totalCosts;
+            accumulatedProfit += monthlyProfit;
+            accumulatedCosts += totalCosts;
+            
+            // Verificar se o ROI acumulado se tornou positivo
+            if (accumulatedProfit > 0 && accumulatedCosts > 0) {
+                return month;
+            }
+        } else {
+            // Mesmo sem usuários, há custos fixos
+            accumulatedCosts += costs.fixedMonthlyCost;
+        }
+    }
+    
+    // Se chegou até 150 meses e não atingiu payback, verificar se é impossível
+    // Calcular se há tendência de melhoria ou se está piorando
+    const lastMonthProfit = accumulatedProfit;
+    const lastMonthUsers = params.initialUsers + (maxMonths - params.startMonth + 1) * params.monthlyUserIncrease;
+    
+    // Se não há usuários ou crescimento, é impossível
+    if (lastMonthUsers <= 0) {
+        return 'impossivel';
+    }
+    
+    // Calcular lucro por usuário para verificar tendência
+    const revenue = calculateRevenue(params, costs, lastMonthUsers);
+    const distribution = calculateUserDistribution(params, lastMonthUsers);
+    
+    const freeCredits = distribution.freeUsers * params.creditsFree * params.consumptionFree;
+    const basicCredits = distribution.basicUsers * params.creditsBasic * params.consumptionBasic;
+    const proCredits = distribution.proUsers * params.creditsPro * params.consumptionPro;
+    const maxCredits = distribution.maxUsers * params.creditsMax * params.consumptionMax;
+    
+    const trialUsers = Math.floor(lastMonthUsers * params.trialPercentage);
+    const trialCredits = trialUsers * params.trialCredits * params.consumptionTrial;
+    
+    const avulsoUsers = Math.floor(lastMonthUsers * params.avulsoPercentage);
+    const avulsoCredits = avulsoUsers * params.avulsoPackagesPerUser * params.avulsoCredits * params.consumptionAvulso;
+    
+    const creditsConsumed = freeCredits + basicCredits + proCredits + maxCredits + trialCredits + avulsoCredits;
+    const variableCosts = creditsConsumed * costs.costPerCredit;
+    const totalCosts = costs.fixedMonthlyCost + variableCosts;
+    
+    const monthlyProfit = revenue.totalRevenue - totalCosts;
+    
+    // Se o lucro mensal é negativo mesmo com muitos usuários, é impossível
+    if (monthlyProfit < 0) {
+        return 'impossivel';
+    }
+    
+    // Se chegou até aqui, pode ser que precise de mais tempo, mas não é impossível
+    return 'muito_longo';
 }
 
 function displayKPIs(kpis, growth, params, costs, startMonth, endMonth, creditsConsumed) {
@@ -712,7 +795,18 @@ function displayKPIs(kpis, growth, params, costs, startMonth, endMonth, creditsC
     document.getElementById('margin').textContent = kpis.margin.toFixed(1) + '%';
     document.getElementById('roi').textContent = kpis.roi.toFixed(1) + '%';
     document.getElementById('breakEven').textContent = breakEvenUsers + ' usuários';
-    document.getElementById('payback').textContent = paybackMonth ? `Mês ${paybackMonth}` : 'Não atingido';
+    // Exibir payback com diferentes cenários
+    let paybackText = '';
+    if (paybackMonth === 'impossivel') {
+        paybackText = 'Impossível';
+    } else if (paybackMonth === 'muito_longo') {
+        paybackText = '>150 meses';
+    } else if (paybackMonth) {
+        paybackText = `Mês ${paybackMonth}`;
+    } else {
+        paybackText = 'Não atingido';
+    }
+    document.getElementById('payback').textContent = paybackText;
     document.getElementById('costPerCredit').textContent = formatCurrency(costs.costPerCredit);
     document.getElementById('revenuePerCredit').textContent = formatCurrency(kpis.revenuePerCredit);
     document.getElementById('profitPerCredit').textContent = formatCurrency(kpis.profitPerCredit) + ' (' + kpis.profitMarginPerCredit.toFixed(1) + '%)';
@@ -878,11 +972,24 @@ function updateKPITooltips(kpis, costs, totalCredits, breakEvenUsers, paybackMon
         const paybackCard = paybackElement.closest('.kpi-card');
         if (paybackCard) {
             const paybackText = paybackElement.textContent;
-            const paybackDescription = paybackMonth ? 
-                `Payback: Mês onde o ROI acumulado se torna positivo\n` +
-                `Lucro acumulado se torna positivo no ${paybackText}` :
-                `Payback: Mês onde o ROI acumulado se torna positivo\n` +
-                `Não atingido no período analisado (${params.projectMonths} meses)`;
+            let paybackDescription = '';
+            
+            if (paybackMonth === 'impossivel') {
+                paybackDescription = `Payback: Mês onde o ROI acumulado se torna positivo\n` +
+                    `Impossível: Os parâmetros não garantem retorno financeiro\n` +
+                    `Verifique custos, preços e crescimento de usuários`;
+            } else if (paybackMonth === 'muito_longo') {
+                paybackDescription = `Payback: Mês onde o ROI acumulado se torna positivo\n` +
+                    `Muito longo: Pode levar mais de 150 meses\n` +
+                    `Considere ajustar preços ou reduzir custos`;
+            } else if (paybackMonth) {
+                paybackDescription = `Payback: Mês onde o ROI acumulado se torna positivo\n` +
+                    `Lucro acumulado se torna positivo no ${paybackText}`;
+            } else {
+                paybackDescription = `Payback: Mês onde o ROI acumulado se torna positivo\n` +
+                    `Não atingido no período analisado (${params.projectMonths} meses)`;
+            }
+            
             paybackCard.setAttribute('data-tooltip', paybackDescription);
         }
     }
